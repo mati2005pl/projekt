@@ -1,0 +1,56 @@
+<div class="app-container">
+    <br>
+    <form class="form" [style]="flag_to_text(this.val)" [formGroup]="weatherSearchForm" (ngSubmit)="sendToAPIXU()">
+        <label for="weather"></label>
+        <input id="weather" class="toggle" type="text" placeholder="Wpisz lokalizacje" formControlName="location">
+        <br>
+        <button class="nic" type="submit" [disabled]="weatherSearchForm.invalid"></button>
+
+        <p *ngIf="(weatherResponse |async) as weather"> pogoda: {{ weather | json }}</p>
+    </form>
+    <ng-container *ngIf="this.weatherData">
+        <div class="up">
+            <img class="bg" src="../assets/kolor-pomaranczowy.jpg" *ngIf="this.weatherData.current.temp_c > 15">
+            <img class="bg" src="../assets/kolor-niebieski.jpg" *ngIf="this.weatherData.current.temp_c <= 15">
+        </div>
+        <div class="down">
+
+            <div class="transition">{{this.weatherData?.location.localtime}}</div>
+            <br>
+            <a class="city" href={{getUrl()}} target="_blank">{{this.weatherData?.location.name}},
+                {{this.weatherData?.location.country}}</a>
+            <br>
+            <p class="info" [hidden]="!isShowDiv">Temperatura w celsjuszach: {{this.weatherData?.current.temp_c}}°C</p>
+            <p class="info" [hidden]="isShowDiv">Temperatura w fahrenheitach: {{this.weatherData?.current.temp_f}}°F</p>
+            <p class="info">Prędkość wiatru:
+                {{this.weatherData?.current.wind_kph}}
+                Km/H <mat-icon style="color:rgb(203,75,78); height: 20px;"
+                    *ngIf="this.weatherData?.current.wind_kph > 29">warning</mat-icon>
+            </p>
+            <p class="info">Kierunek wiatru: <mat-icon
+                    [style]="wind_dir_to_degree(this.weatherData?.current.wind_dir)">arrow_upward</mat-icon>{{this.weatherData?.current.wind_dir}}
+            </p>
+
+            <p class="info">Wilgotność: {{this.weatherData?.current.humidity}}%</p>
+            <p class="info">Ciśnienie: {{this.weatherData?.current.pressure_mb}} hPa</p>
+        </div>
+        <br>
+    </ng-container>
+</div>
+<div class="settings" *ngIf="this.weatherData">
+    <p class="info">Ustawienia</p>
+    <button class="toggle" (click)=toggleDisplay()>°F <> °C</button>
+</div>
+<div class="pogodynka">
+    <p class="pogodynka">Pogodynka</p>
+</div>
+<script>
+</script>
+
+
+
+
+<ng-template #tempf>
+    Temperatura w fahrenheitach: {{this.weatherData?.current.temp_f}}°F
+</ng-template>
+<link href='https://fonts.googleapis.com/css?family=Varela Round' rel='stylesheet'>
